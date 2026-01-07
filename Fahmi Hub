@@ -4,23 +4,20 @@ local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerName = LocalPlayer.Name
 
--- [[ 1. KONFIGURASI ]] --
-local OwnerName = "Fahmizar0"
+-- [[ 1. KONFIGURASI WEBHOOK & OWNER ]] --
+local OwnerName = "Fahmizar0" -- Ganti nama owner di sini
 local WhitelistedUsers = {OwnerName, "miyraav", "lesyo_6"}
 local FileName = "FahmiHub_SavedMaps.json"
--- URL Webhook kamu sudah terpasang di sini
-local DiscordWebhookURL = "https://discord.com/api/webhooks/1458491907138392297/zQAe_M5KL_BCpj-ftkxSU-Yn8o8EeLsZgnm7uzfUXQTjKAcLDDvGAIiS5YbYsnfqic25" 
+local DiscordWebhookURL = "https://discord.com/api/webhooks/1458491907138392297/zQAe_M5KL_BCpj-ftkxSU-Yn8o8EeLsZgnm7uzfUXQTjKAcLDDvGAIiS5YbYsnfqic25"
 
 local function IsWhitelisted(name)
-    for _, user in pairs(WhitelistedUsers) do
-        if user == name then return true end
-    end
+    for _, user in pairs(WhitelistedUsers) do if user == name then return true end end
     return false
 end
 
--- Pembersihan UI lama
-local oldUI = game.CoreGui:FindFirstChild("FahmiHub_V2")
-if oldUI then oldUI:Destroy() end
+-- Reset UI Lama
+local old = game.CoreGui:FindFirstChild("FahmiHub_V2")
+if old then old:Destroy() end
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "FahmiHub_V2"
@@ -28,41 +25,7 @@ ScreenGui.Parent = game.CoreGui
 ScreenGui.ResetOnSpawn = false
 
 -----------------------------------------------------------
--- [[ 2. MODERN MINIMIZE (F) ]] --
------------------------------------------------------------
-local MinIcon = Instance.new("TextButton")
-MinIcon.Size = UDim2.new(0, 50, 0, 50); MinIcon.Position = UDim2.new(0, 20, 0.5, -25)
-MinIcon.BackgroundColor3 = Color3.fromRGB(15, 15, 20); MinIcon.Text = "F"
-MinIcon.TextColor3 = Color3.fromRGB(0, 170, 255); MinIcon.Font = Enum.Font.GothamBold; MinIcon.TextSize = 24
-MinIcon.Visible = false; MinIcon.Active = true; MinIcon.Draggable = true; MinIcon.Parent = ScreenGui
-Instance.new("UICorner", MinIcon).CornerRadius = UDim.new(0, 12)
-Instance.new("UIStroke", MinIcon).Color = Color3.fromRGB(0, 170, 255)
-
------------------------------------------------------------
--- [[ 3. MENU KUNCI ]] --
------------------------------------------------------------
-local KeyFrame = Instance.new("Frame")
-KeyFrame.Size = UDim2.new(0, 400, 0, 300); KeyFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-KeyFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 12); KeyFrame.Active = true; KeyFrame.Draggable = true; KeyFrame.Parent = ScreenGui
-Instance.new("UICorner", KeyFrame).CornerRadius = UDim.new(0, 15)
-local KeyStroke = Instance.new("UIStroke", KeyFrame); KeyStroke.Thickness = 2; KeyStroke.Color = Color3.fromRGB(0, 170, 255)
-
-local KeyTitle = Instance.new("TextLabel")
-KeyTitle.Text = "FAHMI HUB | KEY SYSTEM"; KeyTitle.Size = UDim2.new(1, 0, 0, 60); KeyTitle.TextColor3 = Color3.new(1,1,1); KeyTitle.Font = Enum.Font.GothamBold; KeyTitle.TextSize = 20; KeyTitle.BackgroundTransparency = 1; KeyTitle.Parent = KeyFrame
-
-local KeyInput = Instance.new("TextBox")
-KeyInput.PlaceholderText = "Paste Your Key Here..."; KeyInput.Size = UDim2.new(0, 320, 0, 45); KeyInput.Position = UDim2.new(0.5, -160, 0, 100); KeyInput.BackgroundColor3 = Color3.fromRGB(20, 20, 25); KeyInput.TextColor3 = Color3.new(1,1,1); KeyInput.Font = Enum.Font.Gotham; KeyInput.TextSize = 14; KeyInput.Parent = KeyFrame
-Instance.new("UICorner", KeyInput).CornerRadius = UDim.new(0, 8)
-
-local SubmitBtn = Instance.new("TextButton")
-SubmitBtn.Text = "LOGIN"; SubmitBtn.Size = UDim2.new(0, 320, 0, 45); SubmitBtn.Position = UDim2.new(0.5, -160, 0, 160); SubmitBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255); SubmitBtn.TextColor3 = Color3.new(1,1,1); SubmitBtn.Font = Enum.Font.GothamBold; SubmitBtn.TextSize = 16; SubmitBtn.Parent = KeyFrame
-Instance.new("UICorner", SubmitBtn).CornerRadius = UDim.new(0, 8)
-
-local StatusKey = Instance.new("TextLabel")
-StatusKey.Text = "Enter your username as key"; StatusKey.Size = UDim2.new(1, 0, 0, 30); StatusKey.Position = UDim2.new(0, 0, 1, -50); StatusKey.TextColor3 = Color3.fromRGB(150, 150, 150); StatusKey.Font = Enum.Font.Gotham; StatusKey.TextSize = 12; StatusKey.BackgroundTransparency = 1; StatusKey.Parent = KeyFrame
-
------------------------------------------------------------
--- [[ 4. MENU UTAMA ]] --
+-- [[ 2. UI UTAMA (HUB) ]] --
 -----------------------------------------------------------
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 620, 0, 420); MainFrame.Position = UDim2.new(0.5, -310, 0.5, -210)
@@ -78,203 +41,227 @@ local Logo = Instance.new("TextLabel")
 Logo.Text = "FAHMI HUB"; Logo.Size = UDim2.new(1, 0, 0, 70); Logo.TextColor3 = Color3.fromRGB(0, 170, 255); Logo.Font = Enum.Font.GothamBold; Logo.TextSize = 22; Logo.BackgroundTransparency = 1; Logo.Parent = Sidebar
 
 local Container = Instance.new("Frame")
-Container.Size = UDim2.new(1, -210, 1, -80); Container.Position = UDim2.new(0, 195, 0, 60); Container.BackgroundTransparency = 1; Container.Parent = MainFrame
+Container.Size = UDim2.new(1, -210, 1, -20); Container.Position = UDim2.new(0, 195, 0, 10); Container.BackgroundTransparency = 1; Container.Parent = MainFrame
+
+-- Minimize Button (F)
+local MinIcon = Instance.new("TextButton")
+MinIcon.Size = UDim2.new(0, 50, 0, 50); MinIcon.Position = UDim2.new(0, 20, 0.5, -25)
+MinIcon.BackgroundColor3 = Color3.fromRGB(15, 15, 20); MinIcon.Text = "F"
+MinIcon.TextColor3 = Color3.fromRGB(0, 170, 255); MinIcon.Font = Enum.Font.GothamBold; MinIcon.TextSize = 24
+MinIcon.Visible = false; MinIcon.Parent = ScreenGui; Instance.new("UICorner", MinIcon).CornerRadius = UDim.new(0, 12)
+Instance.new("UIStroke", MinIcon).Color = Color3.fromRGB(0, 170, 255)
 
 local function CreatePage()
     local p = Instance.new("Frame"); p.Size = UDim2.new(1, 0, 1, 0); p.BackgroundTransparency = 1; p.Visible = false; p.Parent = Container
-    local l = Instance.new("UIListLayout", p); l.Padding = UDim.new(0, 15); l.HorizontalAlignment = "Center"; l.VerticalAlignment = "Center"
     return p
 end
 local Page1 = CreatePage(); local Page2 = CreatePage(); local Page3 = CreatePage(); local Page4 = CreatePage()
 
+-- Helper Execute Button
 local function AddExecBtn(parent, text, callback)
-    local Title = Instance.new("TextLabel")
-    Title.Text = text; Title.Size = UDim2.new(1, 0, 0, 30); Title.TextColor3 = Color3.new(1,1,1); Title.Font = Enum.Font.GothamBold; Title.TextSize = 18; Title.BackgroundTransparency = 1; Title.Parent = parent
+    local l = parent:FindFirstChild("UIListLayout") or Instance.new("UIListLayout", parent)
+    l.Padding = UDim.new(0, 15); l.HorizontalAlignment = "Center"; l.VerticalAlignment = "Center"
     local b = Instance.new("TextButton")
-    b.Size = UDim2.new(0.9, 0, 0, 55); b.BackgroundColor3 = Color3.fromRGB(0, 170, 255); b.Text = "EXECUTE"; b.TextColor3 = Color3.new(1,1,1); b.Font = Enum.Font.GothamBold; b.TextSize = 16; b.Parent = parent
+    b.Size = UDim2.new(0.9, 0, 0, 55); b.BackgroundColor3 = Color3.fromRGB(0, 170, 255); b.Text = "EXECUTE " .. text; b.TextColor3 = Color3.new(1,1,1); b.Font = Enum.Font.GothamBold; b.TextSize = 16; b.Parent = parent
     Instance.new("UICorner", b).CornerRadius = UDim.new(0, 10)
-    b.MouseButton1Click:Connect(function()
-        b.Text = "LOADING..."; task.wait(0.5); local s, e = pcall(callback)
-        if s then b.Text = "SUCCESS"; b.BackgroundColor3 = Color3.fromRGB(50, 200, 100)
-        else b.Text = "ERROR"; b.BackgroundColor3 = Color3.fromRGB(200, 50, 50) end
-        task.wait(1.5); b.Text = "EXECUTE"; b.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-    end)
+    b.MouseButton1Click:Connect(callback)
 end
 
--- [[ ISI SCRIPT PAGE 1-3 ]] --
-AddExecBtn(Page1, "LOST CURRENT ESP", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ExluZives/Roblox-script/refs/heads/main/LostCurrentsEsp.txt"))() end)
-AddExecBtn(Page2, "BUNGKER MOD", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Bac0nHck/Scripts/refs/heads/main/dangerousnight.lua"))() end)
-AddExecBtn(Page3, "BOXING BETA", function() 
-    local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-    local Window = Fluent:CreateWindow({Title = "Fahmi Hub | Boxing Beta", TabWidth = 160, Size = UDim2.fromOffset(580, 460), Theme = "Dark"})
-    local Tabs = { Main = Window:AddTab({ Title = "Main", Icon = "" }) }
-    Tabs.Main:AddToggle("PunchAura", {Title = "Box Aura", Default = false})
-    Tabs.Main:AddToggle("AutoBlock", {Title = "Auto Block", Default = false})
-    Tabs.Main:AddToggle("AutoDodge", {Title = "Auto Dodge", Default = false})
-end)
+AddExecBtn(Page1, "LOST CURRENT", function() end)
+AddExecBtn(Page2, "BUNGKER MOD", function() end)
+AddExecBtn(Page3, "BOXING BETA", function() end)
 
--- [[ AUTO WALK SYSTEM (DENGAN APPROVAL KE DISCORD) ]] --
-AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
-    local Data = { Recording = false, Playing = false, AllCheckpoints = {}, SavedMaps = {}, MergedPath = {} }
+-----------------------------------------------------------
+-- [[ 3. POP-UP AUTO WALK MENU (PERSIS SCREENSHOT 3) ]] --
+-----------------------------------------------------------
+local Data = { Recording = false, Playing = false, AllCheckpoints = {}, SavedMaps = {} }
+local TempCP = {} -- Checkpoint sementara sebelum di-merge
+
+local function SaveToFile() pcall(function() writefile(FileName, HttpService:JSONEncode(Data.SavedMaps)) end) end
+local function LoadFromFile() if isfile(FileName) then pcall(function() Data.SavedMaps = HttpService:JSONDecode(readfile(FileName)) end) end end
+
+-- Tombol Execute di Page 4 untuk membuka Pop-up
+AddExecBtn(Page4, "AUTO WALK MENU", function()
+    -- Cek kalau GUI sudah ada biar gak double
+    if ScreenGui:FindFirstChild("AutoWalkPopUp") then ScreenGui.AutoWalkPopUp.Visible = true return end
     
-    local function SaveToFile()
-        local success, encoded = pcall(function() return HttpService:JSONEncode(Data.SavedMaps) end)
-        if success then writefile(FileName, encoded) end
-    end
-    local function LoadFromFile()
-        if isfile(FileName) then
-            local success, decoded = pcall(function() return HttpService:JSONDecode(readfile(FileName)) end)
-            if success then Data.SavedMaps = decoded end
-        end
-    end
-
-    local Gui = Instance.new("ScreenGui"); Gui.Name = "FahmiHub_Perfect_Smooth"; Gui.Parent = game.CoreGui
+    local PopUp = Instance.new("Frame")
+    PopUp.Name = "AutoWalkPopUp"
+    PopUp.Size = UDim2.new(0, 450, 0, 500); PopUp.Position = UDim2.new(0.5, -225, 0.5, -250)
+    PopUp.BackgroundColor3 = Color3.fromRGB(10, 10, 12); PopUp.Active = true; PopUp.Draggable = true; PopUp.Parent = ScreenGui
+    Instance.new("UICorner", PopUp).CornerRadius = UDim.new(0, 10)
+    local PStroke = Instance.new("UIStroke", PopUp); PStroke.Color = Color3.fromRGB(0, 170, 255); PStroke.Thickness = 2
     
-    local function ShowNotif(txt, col)
-        local NotifLabel = Instance.new("TextLabel")
-        NotifLabel.Size = UDim2.new(0, 250, 0, 40); NotifLabel.Position = UDim2.new(0.5, -125, 0.2, 0)
-        NotifLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 25); NotifLabel.Text = txt; NotifLabel.TextColor3 = col or Color3.new(1,1,1)
-        NotifLabel.Font = Enum.Font.GothamBold; NotifLabel.TextSize = 14; NotifLabel.Parent = Gui
-        Instance.new("UICorner", NotifLabel); local Str = Instance.new("UIStroke", NotifLabel); Str.Thickness = 2; Str.Color = col or Color3.fromRGB(0, 170, 255)
-        task.spawn(function() task.wait(1); for i = 0, 1, 0.1 do NotifLabel.TextTransparency = i; NotifLabel.BackgroundTransparency = i; Str.Transparency = i; task.wait(0.05) end NotifLabel:Destroy() end)
-    end
+    -- Header
+    local Header = Instance.new("Frame"); Header.Size = UDim2.new(1, 0, 0, 40); Header.BackgroundTransparency = 1; Header.Parent = PopUp
+    local Title = Instance.new("TextLabel"); Title.Text = "AUTO WALK MENU"; Title.Size = UDim2.new(1, -50, 1, 0); Title.Position = UDim2.new(0, 15, 0, 0); Title.TextColor3 = Color3.new(1,1,1); Title.Font = Enum.Font.GothamBold; Title.TextXAlignment = "Left"; Title.BackgroundTransparency = 1; Title.Parent = Header
+    local CloseBtn = Instance.new("TextButton"); CloseBtn.Text = "×"; CloseBtn.Size = UDim2.new(0, 30, 0, 30); CloseBtn.Position = UDim2.new(1, -35, 0, 5); CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50); CloseBtn.Parent = Header; Instance.new("UICorner", CloseBtn)
+    CloseBtn.MouseButton1Click:Connect(function() PopUp.Visible = false end)
+
+    -- Tabs (Blue & Dark)
+    local TabContainer = Instance.new("Frame"); TabContainer.Size = UDim2.new(1, -20, 0, 40); TabContainer.Position = UDim2.new(0, 10, 0, 45); TabContainer.BackgroundTransparency = 1; TabContainer.Parent = PopUp
+    local btnRec = Instance.new("TextButton"); btnRec.Text = "RECORDER"; btnRec.Size = UDim2.new(0.5, -2, 1, 0); btnRec.BackgroundColor3 = Color3.fromRGB(0, 170, 255); btnRec.TextColor3 = Color3.new(1,1,1); btnRec.Font = Enum.Font.GothamBold; btnRec.Parent = TabContainer; Instance.new("UICorner", btnRec)
+    local btnList = Instance.new("TextButton"); btnList.Text = "MAP LIST"; btnList.Size = UDim2.new(0.5, -2, 1, 0); btnList.Position = UDim2.new(0.5, 2, 0, 0); btnList.BackgroundColor3 = Color3.fromRGB(35, 35, 40); btnList.TextColor3 = Color3.fromRGB(200,200,200); btnList.Font = Enum.Font.GothamBold; btnList.Parent = TabContainer; Instance.new("UICorner", btnList)
+
+    -- Container Utama
+    local Body = Instance.new("Frame"); Body.Size = UDim2.new(1, -20, 1, -100); Body.Position = UDim2.new(0, 10, 0, 95); Body.BackgroundTransparency = 1; Body.Parent = PopUp
     
-    local Main = Instance.new("Frame"); Main.Size = UDim2.new(0, 380, 0, 420); Main.Position = UDim2.new(0.5, -190, 0.5, -210); Main.BackgroundColor3 = Color3.fromRGB(15, 15, 18); Main.Active = true; Main.Draggable = true; Main.Parent = Gui; Main.ClipsDescendants = true
-    Instance.new("UICorner", Main); local Stroke = Instance.new("UIStroke", Main); Stroke.Color = Color3.fromRGB(0, 170, 255)
+    -- [[ HALAMAN RECORDER ]] --
+    local RecPage = Instance.new("Frame"); RecPage.Size = UDim2.new(1,0,1,0); RecPage.BackgroundTransparency = 1; RecPage.Parent = Body
+    local RecLayout = Instance.new("UIListLayout", RecPage); RecLayout.Padding = UDim.new(0, 8)
     
-    local function PerfectSmoothPlay(path, btn, origText, origColor)
-        Data.Playing = true
-        task.spawn(function()
-            for _, p in ipairs(path) do
-                if not Data.Playing then break end
-                local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-                if hrp then 
-                    hrp.CFrame = CFrame.new(unpack(p.pos)) * CFrame.Angles(unpack(p.ang))
-                    hrp.AssemblyLinearVelocity = Vector3.new(unpack(p.vel))
-                end
-                RunService.Heartbeat:Wait()
-            end
-            Data.Playing = false
-            if btn then btn.Text = origText btn.BackgroundColor3 = origColor end
-        end)
+    local CPLabel = Instance.new("TextLabel"); CPLabel.Text = "CHECKPOINTS: 0"; CPLabel.Size = UDim2.new(1, 0, 0, 20); CPLabel.TextColor3 = Color3.fromRGB(0, 170, 255); CPLabel.BackgroundTransparency = 1; CPLabel.Font = Enum.Font.GothamBold; CPLabel.Parent = RecPage
+    
+    local NameBox = Instance.new("TextBox"); NameBox.PlaceholderText = "Map Name..."; NameBox.Size = UDim2.new(1, 0, 0, 40); NameBox.BackgroundColor3 = Color3.fromRGB(25, 25, 30); NameBox.TextColor3 = Color3.new(1,1,1); NameBox.Parent = RecPage; Instance.new("UICorner", NameBox)
+
+    local function CreateBtn(txt, color, parent, cb)
+        local b = Instance.new("TextButton"); b.Text = txt; b.Size = UDim2.new(1, 0, 0, 40); b.BackgroundColor3 = color; b.TextColor3 = Color3.new(1,1,1); b.Font = Enum.Font.GothamBold; b.Parent = parent; Instance.new("UICorner", b)
+        b.MouseButton1Click:Connect(function() cb(b) end) return b
     end
 
-    local Body = Instance.new("Frame"); Body.Size = UDim2.new(1, -20, 1, -55); Body.Position = UDim2.new(0, 10, 0, 45); Body.BackgroundTransparency = 1; Body.Parent = Main
-    local PageRec = Instance.new("Frame"); PageRec.Size = UDim2.new(1, 0, 1, -40); PageRec.Position = UDim2.new(0, 0, 0, 40); PageRec.BackgroundTransparency = 1; PageRec.Parent = Body
-    local ListLayout = Instance.new("UIListLayout", PageRec); ListLayout.Padding = UDim.new(0, 5)
-
-    local function CreateBtn(txt, parent, clr, cb)
-        local b = Instance.new("TextButton"); b.Size = UDim2.new(1, 0, 0, 35); b.BackgroundColor3 = clr; b.Text = txt; b.TextColor3 = Color3.new(1,1,1); b.Font = Enum.Font.GothamBold; b.Parent = parent; Instance.new("UICorner", b); b.MouseButton1Click:Connect(function() cb(b) end) return b
-    end
-
-    local MapInp = Instance.new("TextBox"); MapInp.Size = UDim2.new(1, 0, 0, 30); MapInp.PlaceholderText = "Nama Map..."; MapInp.BackgroundColor3 = Color3.fromRGB(20, 20, 25); MapInp.TextColor3 = Color3.new(1,1,1); MapInp.Parent = PageRec; Instance.new("UICorner", MapInp)
-
-    CreateBtn("🔴 RECORD / STOP CP", PageRec, Color3.fromRGB(180, 50, 50), function()
+    -- 1. RECORD (MERAH)
+    CreateBtn("🔴 RECORD / STOP CP", Color3.fromRGB(180, 50, 50), RecPage, function(btn)
         Data.Recording = not Data.Recording
         if Data.Recording then
-            ShowNotif("🔴 RECORDING STARTED", Color3.new(1,0,0))
+            btn.Text = "⏹ STOP RECORDING"
             task.spawn(function()
-                local thisCP = {}
+                local thisSegment = {}
                 while Data.Recording do
                     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                     if hrp then
                         local rx, ry, rz = hrp.CFrame:ToOrientation()
-                        table.insert(thisCP, {pos={hrp.Position.X, hrp.Position.Y, hrp.Position.Z}, ang={rx,ry,rz}, vel={hrp.AssemblyLinearVelocity.X, hrp.AssemblyLinearVelocity.Y, hrp.AssemblyLinearVelocity.Z}})
+                        table.insert(thisSegment, {pos={hrp.Position.X, hrp.Position.Y, hrp.Position.Z}, ang={rx,ry,rz}, vel={hrp.AssemblyLinearVelocity.X, hrp.AssemblyLinearVelocity.Y, hrp.AssemblyLinearVelocity.Z}})
                     end
                     RunService.Heartbeat:Wait()
                 end
-                table.insert(Data.AllCheckpoints, thisCP)
+                table.insert(TempCP, thisSegment) -- Masuk ke temp
+                CPLabel.Text = "CHECKPOINTS: " .. #TempCP .. " (Need Merge)"
             end)
-        else
-            ShowNotif("⏹ RECORDING STOPPED", Color3.new(1,1,1))
-        end
+        else btn.Text = "🔴 RECORD / STOP CP" end
     end)
 
-    CreateBtn("▶️ PREVIEW (80%-FINISH)", PageRec, Color3.fromRGB(60, 150, 60), function(btn)
-        if #Data.AllCheckpoints == 0 then return end
+    -- 2. PREVIEW (HIJAU)
+    CreateBtn("▶️ PREVIEW (80%-FINISH)", Color3.fromRGB(60, 150, 60), RecPage, function(btn)
+        if #Data.AllCheckpoints == 0 and #TempCP == 0 then return end
+        local target = (#Data.AllCheckpoints > 0) and Data.AllCheckpoints[#Data.AllCheckpoints] or TempCP[#TempCP]
+        
         Data.Playing = not Data.Playing
         if Data.Playing then
             btn.Text = "⏹ STOP PREVIEW"
-            local lastCP = Data.AllCheckpoints[#Data.AllCheckpoints]
-            local startIndex = math.floor(#lastCP * 0.8)
-            local previewPath = {}
-            for i = startIndex, #lastCP do table.insert(previewPath, lastCP[i]) end
-            PerfectSmoothPlay(previewPath, btn, "▶️ PREVIEW (80%-FINISH)", Color3.fromRGB(60, 150, 60))
-        else
-            btn.Text = "▶️ PREVIEW (80%-FINISH)"
-        end
+            local start = math.floor(#target * 0.8)
+            local path = {}; for i=start, #target do table.insert(path, target[i]) end
+            
+            task.spawn(function()
+                for _, p in ipairs(path) do
+                    if not Data.Playing then break end
+                    local hrp = LocalPlayer.Character.HumanoidRootPart
+                    hrp.CFrame = CFrame.new(unpack(p.pos)) * CFrame.Angles(unpack(p.ang))
+                    hrp.AssemblyLinearVelocity = Vector3.new(unpack(p.vel))
+                    RunService.Heartbeat:Wait()
+                end
+                Data.Playing = false; btn.Text = "▶️ PREVIEW (80%-FINISH)"
+            end)
+        else btn.Text = "▶️ PREVIEW (80%-FINISH)" end
     end)
 
-    -- Logika Tombol SAVE (Owner) vs SUBMIT (User)
-    local SaveBtnText = (PlayerName == OwnerName) and "💾 SAVE PERMANENT" or "📤 SUBMIT TO OWNER"
-    local SaveBtnColor = (PlayerName == OwnerName) and Color3.fromRGB(0, 150, 100) or Color3.fromRGB(200, 100, 0)
-
-    CreateBtn(SaveBtnText, PageRec, SaveBtnColor, function()
-        if #Data.AllCheckpoints == 0 then ShowNotif("NO DATA TO SAVE!", Color3.new(1,0,0)) return end
-        
+    -- 3. MERGE ALL CP (UNGU) - SESUAI GAMBAR
+    CreateBtn("🔗 MERGE ALL CP", Color3.fromRGB(100, 80, 200), RecPage, function()
+        if #TempCP == 0 then return end
         local merged = {}
-        for _, cp in ipairs(Data.AllCheckpoints) do for _, p in ipairs(cp) do table.insert(merged, p) end end
-        local mName = MapInp.Text ~= "" and MapInp.Text or "Map_" .. os.time()
+        for _, segment in ipairs(TempCP) do
+            for _, point in ipairs(segment) do table.insert(merged, point) end
+        end
+        table.insert(Data.AllCheckpoints, merged)
+        TempCP = {}
+        CPLabel.Text = "CHECKPOINTS: MERGED (" .. #Data.AllCheckpoints .. " Segments)"
+    end)
+
+    -- 4. DELETE LAST CP (ABU-ABU) - SESUAI GAMBAR
+    CreateBtn("DELETE LAST CP", Color3.fromRGB(60, 60, 65), RecPage, function()
+        if #TempCP > 0 then table.remove(TempCP); CPLabel.Text = "CHECKPOINTS: " .. #TempCP
+        elseif #Data.AllCheckpoints > 0 then table.remove(Data.AllCheckpoints) CPLabel.Text = "Deleted Last Merged." end
+    end)
+
+    -- 5. SAVE PERMANENT (HIJAU TUA) - DENGAN WEBHOOK
+    local SaveTxt = (PlayerName == OwnerName) and "💾 SAVE MAP PERMANENT" or "📤 SUBMIT MAP TO OWNER"
+    CreateBtn(SaveTxt, Color3.fromRGB(0, 150, 100), RecPage, function()
+        local FinalMap = {}
+        -- Gabungkan semua yang sudah di merge
+        for _, segment in ipairs(Data.AllCheckpoints) do for _, p in ipairs(segment) do table.insert(FinalMap, p) end end
+        
+        if #FinalMap == 0 then return end
+        local mName = NameBox.Text ~= "" and NameBox.Text or "Map_"..os.time()
 
         if PlayerName == OwnerName then
-            Data.SavedMaps[mName] = merged
-            SaveToFile()
-            ShowNotif("💾 MAP SAVED LOCALLY!", Color3.new(0,1,0))
+            Data.SavedMaps[mName] = FinalMap; SaveToFile()
+            NameBox.Text = "SAVED!"; task.wait(1); NameBox.Text = ""
         else
-            ShowNotif("📤 SUBMITTING...", Color3.new(1,1,0))
+            -- LOGIC DISCORD WEBHOOK
             local payload = HttpService:JSONEncode({
                 content = "📌 **NEW MAP SUBMISSION**",
                 embeds = {{
-                    title = "User: " .. PlayerName,
-                    description = "Map Name: " .. mName .. "\nTotal Checkpoints: " .. #Data.AllCheckpoints,
-                    color = 16753920,
-                    fields = {{name = "Data", value = "User requested map approval for the recorded route."}}
+                    title = "Map Name: " .. mName,
+                    description = "Created by: **" .. PlayerName .. "**\nPoints: " .. #FinalMap,
+                    color = 65280 -- Hijau
                 }}
             })
-            pcall(function() 
-                local req = (syn and syn.request) or (http and http.request) or http_request or request
-                req({Url = DiscordWebhookURL, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = payload}) 
+            pcall(function()
+                request({Url = DiscordWebhookURL, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = payload})
             end)
-            ShowNotif("✅ SUBMITTED TO FAHMI!", Color3.new(0,1,1))
+            NameBox.Text = "SENT TO OWNER!"; task.wait(1); NameBox.Text = ""
         end
     end)
 
-    local Header = Instance.new("Frame"); Header.Size = UDim2.new(1, 0, 0, 40); Header.BackgroundColor3 = Color3.fromRGB(25, 25, 30); Header.Parent = Main
-    local CloseBtn = Instance.new("TextButton"); CloseBtn.Text = "×"; CloseBtn.Size = UDim2.new(0, 30, 0, 30); CloseBtn.Position = UDim2.new(1, -35, 0, 5); CloseBtn.BackgroundColor3 = Color3.fromRGB(150, 50, 50); CloseBtn.Parent = Header; Instance.new("UICorner", CloseBtn)
-    CloseBtn.MouseButton1Click:Connect(function() Gui:Destroy() end)
-    
-    LoadFromFile()
+    -- [[ HALAMAN MAP LIST ]] --
+    local ListPage = Instance.new("ScrollingFrame"); ListPage.Size = UDim2.new(1,0,1,0); ListPage.BackgroundTransparency = 1; ListPage.Visible = false; ListPage.Parent = Body; ListPage.ScrollBarThickness = 2
+    local ListL = Instance.new("UIListLayout", ListPage); ListL.Padding = UDim.new(0, 5)
+
+    -- Tab Switch Logic
+    btnRec.MouseButton1Click:Connect(function() RecPage.Visible = true; ListPage.Visible = false; btnRec.BackgroundColor3 = Color3.fromRGB(0,170,255); btnList.BackgroundColor3 = Color3.fromRGB(35,35,40) end)
+    btnList.MouseButton1Click:Connect(function() 
+        RecPage.Visible = false; ListPage.Visible = true; btnList.BackgroundColor3 = Color3.fromRGB(0,170,255); btnRec.BackgroundColor3 = Color3.fromRGB(35,35,40) 
+        LoadFromFile()
+        for _,c in pairs(ListPage:GetChildren()) do if c:IsA("TextButton") then c:Destroy() end end
+        for name, path in pairs(Data.SavedMaps) do
+            CreateBtn(name, Color3.fromRGB(30,30,35), ListPage, function()
+                -- Simple Play Logic for Saved Maps
+                task.spawn(function()
+                    for _, p in ipairs(path) do
+                        local hrp = LocalPlayer.Character.HumanoidRootPart
+                        hrp.CFrame = CFrame.new(unpack(p.pos)) * CFrame.Angles(unpack(p.ang)); RunService.Heartbeat:Wait()
+                    end
+                end)
+            end)
+        end
+    end)
 end)
 
--- [[ NAVIGASI SIDEBAR ]] --
+-----------------------------------------------------------
+-- [[ 4. NAVIGASI UTAMA ]] --
+-----------------------------------------------------------
 local function TabBtn(text, pos, page)
     local b = Instance.new("TextButton")
     b.Text = "  " .. text; b.Size = UDim2.new(1, -20, 0, 45); b.Position = UDim2.new(0, 10, 0, pos)
-    b.BackgroundColor3 = Color3.fromRGB(25, 25, 30); b.TextColor3 = Color3.fromRGB(180, 180, 180); b.Font = Enum.Font.GothamBold; b.TextSize = 13; b.TextXAlignment = "Left"; b.Parent = Sidebar; Instance.new("UICorner", b)
-    b.MouseButton1Click:Connect(function() Page1.Visible = false; Page2.Visible = false; Page3.Visible = false; Page4.Visible = false; page.Visible = true end)
-    return b
+    b.BackgroundColor3 = Color3.fromRGB(25, 25, 30); b.TextColor3 = Color3.new(1,1,1); b.Font = Enum.Font.GothamBold; b.TextXAlignment = "Left"; b.Parent = Sidebar; Instance.new("UICorner", b)
+    b.MouseButton1Click:Connect(function()
+        Page1.Visible = false; Page2.Visible = false; Page3.Visible = false; Page4.Visible = false
+        page.Visible = true
+    end)
 end
 TabBtn("LOST CURRENT", 90, Page1); TabBtn("BUNGKER", 145, Page2); TabBtn("BOXING BETA", 200, Page3); TabBtn("AUTO WALK", 255, Page4)
 
--- [[ LOGIN LOGIC ]] --
-local function UnlockMenu()
-    KeyFrame:Destroy()
-    MainFrame.Visible = true
-    Page1.Visible = true
-end
+-- Tombol Close & Mini Main Menu
+local Close = Instance.new("TextButton"); Close.Text = "×"; Close.Size = UDim2.new(0, 35, 0, 35); Close.Position = UDim2.new(1, -45, 0, 10); Close.BackgroundColor3 = Color3.fromRGB(200, 50, 50); Close.Parent = MainFrame; Instance.new("UICorner", Close)
+local Mini = Instance.new("TextButton"); Mini.Text = "-"; Mini.Size = UDim2.new(0, 35, 0, 35); Mini.Position = UDim2.new(1, -90, 0, 10); Mini.BackgroundColor3 = Color3.fromRGB(40, 40, 45); Mini.Parent = MainFrame; Instance.new("UICorner", Mini)
 
-if PlayerName == OwnerName then
-    UnlockMenu()
-else
-    SubmitBtn.MouseButton1Click:Connect(function()
-        if IsWhitelisted(PlayerName) and KeyInput.Text == PlayerName then
-            UnlockMenu()
-        else
-            StatusKey.Text = "Invalid Key!"; StatusKey.TextColor3 = Color3.fromRGB(255, 50, 50)
-        end
-    end)
-end
-
--- Minimaze logic
-local Close = Instance.new("TextButton"); Close.Text = "×"; Close.Size = UDim2.new(0, 35, 0, 35); Close.Position = UDim2.new(1, -45, 0, 10); Close.BackgroundColor3 = Color3.fromRGB(200, 50, 50); Close.TextColor3 = Color3.new(1,1,1); Close.Font = Enum.Font.GothamBold; Close.TextSize = 25; Close.Parent = MainFrame; Instance.new("UICorner", Close)
 Close.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+Mini.MouseButton1Click:Connect(function() MainFrame.Visible = false; MinIcon.Visible = true end)
+MinIcon.MouseButton1Click:Connect(function() MainFrame.Visible = true; MinIcon.Visible = false end)
+
+-- Key System (Login)
+local KeyFrame = Instance.new("Frame"); KeyFrame.Size = UDim2.new(0, 400, 0, 300); KeyFrame.Position = UDim2.new(0.5, -200, 0.5, -150); KeyFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 12); KeyFrame.Parent = ScreenGui; Instance.new("UICorner", KeyFrame)
+local KeyInp = Instance.new("TextBox"); KeyInp.Size = UDim2.new(0, 300, 0, 45); KeyInp.Position = UDim2.new(0.5, -150, 0.4, 0); KeyInp.PlaceholderText = "Username as Key..."; KeyInp.Parent = KeyFrame
+local Login = Instance.new("TextButton"); Login.Size = UDim2.new(0, 300, 0, 45); Login.Position = UDim2.new(0.5, -150, 0.6, 0); Login.Text = "LOGIN"; Login.BackgroundColor3 = Color3.fromRGB(0,170,255); Login.Parent = KeyFrame; Instance.new("UICorner", Login)
+
+Login.MouseButton1Click:Connect(function() if IsWhitelisted(PlayerName) and KeyInp.Text == PlayerName then KeyFrame:Destroy(); MainFrame.Visible = true; Page1.Visible = true end end)
+if PlayerName == OwnerName then KeyFrame:Destroy(); MainFrame.Visible = true; Page1.Visible = true end
