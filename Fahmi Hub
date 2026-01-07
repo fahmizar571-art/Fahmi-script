@@ -6,7 +6,7 @@ local PlayerName = LocalPlayer.Name
 
 -- [[ 1. KONFIGURASI ]] --
 local OwnerName = "Fahmizar0"
-local WhitelistedUsers = {OwnerName, "miyraav"}
+local WhitelistedUsers = {OwnerName, "miyraav", "lesyo_6"} -- Nama lesyo_6 sudah ditambahkan
 local FileName = "FahmiHub_SavedMaps.json"
 
 local function IsWhitelisted(name)
@@ -205,7 +205,7 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
         local f = Instance.new("Frame"); f.Size = UDim2.new(1, 0, 0, 70); f.BackgroundColor3 = Color3.fromRGB(25, 25, 30); f.Parent = PageList; Instance.new("UICorner", f)
         local b = Instance.new("TextLabel"); b.Size = UDim2.new(0.9, 0, 0, 30); b.Position = UDim2.new(0, 10, 0, 5); b.BackgroundTransparency = 1; b.Text = "📁 " .. mName; b.TextColor3 = Color3.fromRGB(0, 170, 255); b.TextXAlignment = "Left"; b.Font = Enum.Font.GothamBold; b.Parent = f
         
-        -- LOGIC: HANYA OWNER YANG BISA LIHAT TOMBOL HAPUS (X) --
+        -- Hanya Owner (Fahmizar0) yang bisa hapus map
         if PlayerName == OwnerName then
             local del = Instance.new("TextButton")
             del.Size = UDim2.new(0, 25, 0, 25); del.Position = UDim2.new(1, -35, 0, 5)
@@ -238,15 +238,27 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
     local MapInp = Instance.new("TextBox"); MapInp.Size = UDim2.new(1, 0, 0, 30); MapInp.PlaceholderText = "Nama Map..."; MapInp.BackgroundColor3 = Color3.fromRGB(20, 20, 25); MapInp.TextColor3 = Color3.new(1,1,1); MapInp.Parent = PageRec; Instance.new("UICorner", MapInp)
     CreateBtn("🔴 RECORD / STOP CP", PageRec, Color3.fromRGB(180, 50, 50), ToggleRecord)
     
-    CreateBtn("▶️ PREVIEW / STOP", PageRec, Color3.fromRGB(60, 150, 60), function(btn)
+    -- [[ PREVIEW 80% ]] --
+    CreateBtn("▶️ PREVIEW (80%-FINISH)", PageRec, Color3.fromRGB(60, 150, 60), function(btn)
         if #Data.AllCheckpoints == 0 then return end
         Data.Playing = not Data.Playing
         if Data.Playing then
             btn.Text = "⏹ STOP PREVIEW"
             btn.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
-            PerfectSmoothPlay(Data.AllCheckpoints[#Data.AllCheckpoints], btn, "▶️ PREVIEW / STOP", Color3.fromRGB(60, 150, 60))
+            
+            local lastCP = Data.AllCheckpoints[#Data.AllCheckpoints]
+            local totalData = #lastCP
+            local startIndex = math.floor(totalData * 0.8)
+            if startIndex < 1 then startIndex = 1 end
+            
+            local previewPath = {}
+            for i = startIndex, totalData do
+                table.insert(previewPath, lastCP[i])
+            end
+            
+            PerfectSmoothPlay(previewPath, btn, "▶️ PREVIEW (80%-FINISH)", Color3.fromRGB(60, 150, 60))
         else
-            btn.Text = "▶️ PREVIEW / STOP"
+            btn.Text = "▶️ PREVIEW (80%-FINISH)"
             btn.BackgroundColor3 = Color3.fromRGB(60, 150, 60)
         end
     end)
