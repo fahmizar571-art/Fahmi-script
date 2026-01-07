@@ -5,7 +5,8 @@ local LocalPlayer = Players.LocalPlayer
 local PlayerName = LocalPlayer.Name
 
 -- [[ 1. KONFIGURASI ]] --
-local WhitelistedUsers = {"Fahmizar0", "miyraav"}
+local OwnerName = "Fahmizar0"
+local WhitelistedUsers = {OwnerName, "miyraav"}
 local FileName = "FahmiHub_SavedMaps.json"
 
 local function IsWhitelisted(name)
@@ -98,7 +99,7 @@ local function AddExecBtn(parent, text, callback)
     end)
 end
 
--- [[ INTEGRASI ISI SCRIPT ]] --
+-- [[ ISI SCRIPT ]] --
 AddExecBtn(Page1, "LOST CURRENT ESP", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ExluZives/Roblox-script/refs/heads/main/LostCurrentsEsp.txt"))() end)
 AddExecBtn(Page2, "BUNGKER MOD", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Bac0nHck/Scripts/refs/heads/main/dangerousnight.lua"))() end)
 AddExecBtn(Page3, "BOXING BETA", function() 
@@ -110,7 +111,7 @@ AddExecBtn(Page3, "BOXING BETA", function()
     Tabs.Main:AddToggle("AutoDodge", {Title = "Auto Dodge", Default = false})
 end)
 
--- [[ AUTO WALK SYSTEM (UPDATED: PREVIEW TOGGLE & SMOOTH FIX) ]] --
+-- [[ AUTO WALK SYSTEM (FULL VERSION) ]] --
 AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
     local Data = { Recording = false, Playing = false, AllCheckpoints = {}, SavedMaps = {}, MergedPath = {} }
     
@@ -139,7 +140,6 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
     local Main = Instance.new("Frame"); Main.Size = UDim2.new(0, 380, 0, 380); Main.Position = UDim2.new(0.5, -190, 0.5, -190); Main.BackgroundColor3 = Color3.fromRGB(15, 15, 18); Main.Active = true; Main.Draggable = true; Main.Parent = Gui; Main.ClipsDescendants = true
     Instance.new("UICorner", Main); local Stroke = Instance.new("UIStroke", Main); Stroke.Color = Color3.fromRGB(0, 170, 255)
     
-    -- Floating Controls
     local FloatingFrame = Instance.new("Frame"); FloatingFrame.Size = UDim2.new(0, 120, 0, 50); FloatingFrame.Position = UDim2.new(0.8, 0, 0.5, 0); FloatingFrame.BackgroundTransparency = 1; FloatingFrame.Visible = false; FloatingFrame.Active = true; FloatingFrame.Draggable = true; FloatingFrame.Parent = Gui
     local FloatRec = Instance.new("TextButton"); FloatRec.Size = UDim2.new(0, 45, 0, 45); FloatRec.BackgroundColor3 = Color3.fromRGB(200, 50, 50); FloatRec.Text = "REC"; FloatRec.TextColor3 = Color3.new(1,1,1); FloatRec.Font = Enum.Font.GothamBold; FloatRec.Parent = FloatingFrame; Instance.new("UICorner", FloatRec).CornerRadius = UDim.new(1, 0)
     local FloatDel = Instance.new("TextButton"); FloatDel.Size = UDim2.new(0, 45, 0, 45); FloatDel.Position = UDim2.new(0, 55, 0, 0); FloatDel.BackgroundColor3 = Color3.fromRGB(50, 50, 55); FloatDel.Text = "✖"; FloatDel.TextColor3 = Color3.new(1,1,1); FloatDel.Font = Enum.Font.GothamBold; FloatDel.Parent = FloatingFrame; Instance.new("UICorner", FloatDel).CornerRadius = UDim.new(1, 0)
@@ -156,7 +156,7 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
                         local rx, ry, rz = hrp.CFrame:ToOrientation() 
                         table.insert(thisCP, {pos={hrp.Position.X, hrp.Position.Y, hrp.Position.Z}, ang={rx,ry,rz}, vel={hrp.AssemblyLinearVelocity.X, hrp.AssemblyLinearVelocity.Y, hrp.AssemblyLinearVelocity.Z}}) 
                     end 
-                    RunService.Heartbeat:Wait() -- Record exact physics step
+                    RunService.Heartbeat:Wait()
                 end
                 if #thisCP > 0 then table.insert(Data.AllCheckpoints, thisCP) end
                 local s = Main:FindFirstChild("StatusLabel", true); if s then s.Text = "CHECKPOINTS: " .. #Data.AllCheckpoints end 
@@ -166,7 +166,6 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
     local function DeleteLastCP() if #Data.AllCheckpoints > 0 then table.remove(Data.AllCheckpoints) local s = Main:FindFirstChild("StatusLabel", true); if s then s.Text = "CHECKPOINTS: " .. #Data.AllCheckpoints end ShowNotif("🗑️ LAST CP DELETED", Color3.new(1, 1, 0)) end end
     FloatRec.MouseButton1Click:Connect(ToggleRecord); FloatDel.MouseButton1Click:Connect(DeleteLastCP); FloatShow.MouseButton1Click:Connect(function() Main.Visible = true; FloatingFrame.Visible = false end)
 
-    -- UI Header
     local Header = Instance.new("Frame"); Header.Size = UDim2.new(1, 0, 0, 40); Header.BackgroundColor3 = Color3.fromRGB(25, 25, 30); Header.Parent = Main
     local Title = Instance.new("TextLabel"); Title.Size = UDim2.new(1, -100, 1, 0); Title.Position = UDim2.new(0, 12, 0, 0); Title.Text = "AUTO WALK MENU"; Title.TextColor3 = Color3.new(1,1,1); Title.Font = Enum.Font.GothamBold; Title.BackgroundTransparency = 1; Title.TextXAlignment = "Left"; Title.Parent = Header
     local MiniBtn = Instance.new("TextButton"); MiniBtn.Size = UDim2.new(0, 30, 0, 30); MiniBtn.Position = UDim2.new(1, -70, 0, 5); MiniBtn.Text = "-"; MiniBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 45); MiniBtn.Parent = Header; Instance.new("UICorner", MiniBtn)
@@ -185,7 +184,6 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
         local b = Instance.new("TextButton"); b.Size = UDim2.new(1, 0, 0, 35); b.BackgroundColor3 = clr; b.Text = txt; b.TextColor3 = Color3.new(1,1,1); b.Font = Enum.Font.GothamBold; b.Parent = parent; Instance.new("UICorner", b); b.MouseButton1Click:Connect(function() cb(b) end) return b
     end
     
-    -- Smooth Play Logic (Enhanced)
     local function PerfectSmoothPlay(path, btn, origText, origColor)
         Data.Playing = true
         task.spawn(function()
@@ -193,26 +191,34 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
                 if not Data.Playing then break end
                 local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                 if hrp then 
-                    -- Direct CFrame set on Heartbeat is the standard for "perfect" replay
                     hrp.CFrame = CFrame.new(unpack(p.pos)) * CFrame.Angles(unpack(p.ang))
                     hrp.AssemblyLinearVelocity = Vector3.new(unpack(p.vel))
                 end
-                RunService.Heartbeat:Wait() -- Sync strictly with physics engine
+                RunService.Heartbeat:Wait()
             end
             Data.Playing = false
-            if btn then 
-                btn.Text = origText
-                btn.BackgroundColor3 = origColor
-            end
+            if btn then btn.Text = origText btn.BackgroundColor3 = origColor end
         end)
     end
     
     local function AddMapToUI(mName, pathData)
         local f = Instance.new("Frame"); f.Size = UDim2.new(1, 0, 0, 70); f.BackgroundColor3 = Color3.fromRGB(25, 25, 30); f.Parent = PageList; Instance.new("UICorner", f)
-        local b = Instance.new("TextButton"); b.Size = UDim2.new(0.8, 0, 0, 30); b.Position = UDim2.new(0, 10, 0, 5); b.BackgroundTransparency = 1; b.Text = "📁 " .. mName; b.TextColor3 = Color3.fromRGB(0, 170, 255); b.TextXAlignment = "Left"; b.Font = Enum.Font.GothamBold; b.Parent = f
-        local del = Instance.new("TextButton"); del.Size = UDim2.new(0, 25, 0, 25); del.Position = UDim2.new(1, -30, 0, 5); del.Text = "X"; del.BackgroundColor3 = Color3.fromRGB(150, 0, 0); del.Parent = f; Instance.new("UICorner", del)
-        del.MouseButton1Click:Connect(function() Data.SavedMaps[mName] = nil; SaveToFile(); f:Destroy() end)
+        local b = Instance.new("TextLabel"); b.Size = UDim2.new(0.9, 0, 0, 30); b.Position = UDim2.new(0, 10, 0, 5); b.BackgroundTransparency = 1; b.Text = "📁 " .. mName; b.TextColor3 = Color3.fromRGB(0, 170, 255); b.TextXAlignment = "Left"; b.Font = Enum.Font.GothamBold; b.Parent = f
         
+        -- LOGIC: HANYA OWNER YANG BISA LIHAT TOMBOL HAPUS (X) --
+        if PlayerName == OwnerName then
+            local del = Instance.new("TextButton")
+            del.Size = UDim2.new(0, 25, 0, 25); del.Position = UDim2.new(1, -35, 0, 5)
+            del.BackgroundColor3 = Color3.fromRGB(150, 50, 50); del.Text = "×"; del.TextColor3 = Color3.new(1,1,1)
+            del.Font = Enum.Font.GothamBold; del.Parent = f; Instance.new("UICorner", del)
+            del.MouseButton1Click:Connect(function()
+                Data.SavedMaps[mName] = nil
+                SaveToFile()
+                f:Destroy()
+                ShowNotif("🗑️ MAP DELETED", Color3.new(1, 0, 0))
+            end)
+        end
+
         local aw = CreateBtn("🚀 START AUTO WALK", f, Color3.fromRGB(40, 40, 45), function(btn)
             Data.Playing = not Data.Playing
             if Data.Playing then 
@@ -232,7 +238,6 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
     local MapInp = Instance.new("TextBox"); MapInp.Size = UDim2.new(1, 0, 0, 30); MapInp.PlaceholderText = "Nama Map..."; MapInp.BackgroundColor3 = Color3.fromRGB(20, 20, 25); MapInp.TextColor3 = Color3.new(1,1,1); MapInp.Parent = PageRec; Instance.new("UICorner", MapInp)
     CreateBtn("🔴 RECORD / STOP CP", PageRec, Color3.fromRGB(180, 50, 50), ToggleRecord)
     
-    -- [[ TOMBOL PREVIEW DENGAN TOGGLE ON/OFF (ANTI DOUBLE PLAY) ]] --
     CreateBtn("▶️ PREVIEW / STOP", PageRec, Color3.fromRGB(60, 150, 60), function(btn)
         if #Data.AllCheckpoints == 0 then return end
         Data.Playing = not Data.Playing
@@ -267,12 +272,26 @@ local function TabBtn(text, pos, page)
 end
 TabBtn("LOST CURRENT", 90, Page1); TabBtn("BUNGKER", 145, Page2); TabBtn("BOXING BETA", 200, Page3); TabBtn("AUTO WALK", 255, Page4)
 
--- [[ TOMBOL CLOSE & MINI UTAMA ]] --
+-- [[ TOMBOL CLOSE & MINI ]] --
 local Close = Instance.new("TextButton"); Close.Text = "×"; Close.Size = UDim2.new(0, 35, 0, 35); Close.Position = UDim2.new(1, -45, 0, 10); Close.BackgroundColor3 = Color3.fromRGB(200, 50, 50); Close.TextColor3 = Color3.new(1,1,1); Close.Font = Enum.Font.GothamBold; Close.TextSize = 25; Close.Parent = MainFrame; Instance.new("UICorner", Close)
 local Mini = Instance.new("TextButton"); Mini.Text = "-"; Mini.Size = UDim2.new(0, 35, 0, 35); Mini.Position = UDim2.new(1, -90, 0, 10); Mini.BackgroundColor3 = Color3.fromRGB(40, 40, 45); Mini.TextColor3 = Color3.new(1,1,1); Mini.Font = Enum.Font.GothamBold; Mini.TextSize = 25; Mini.Parent = MainFrame; Instance.new("UICorner", Mini)
 Close.MouseButton1Click:Connect(function() ScreenGui:Destroy() end); Mini.MouseButton1Click:Connect(function() MainFrame.Visible = false; MinIcon.Visible = true end); MinIcon.MouseButton1Click:Connect(function() MainFrame.Visible = true; MinIcon.Visible = false end)
-SubmitBtn.MouseButton1Click:Connect(function()
-    if IsWhitelisted(PlayerName) and KeyInput.Text == PlayerName then
-        StatusKey.Text = "Access Granted!"; StatusKey.TextColor3 = Color3.fromRGB(0, 255, 100); task.wait(0.5); KeyFrame:Destroy(); MainFrame.Visible = true; Page1.Visible = true
-    else StatusKey.Text = "Invalid Key!"; StatusKey.TextColor3 = Color3.fromRGB(255, 50, 50) end
-end)
+
+-- [[ LOGIN LOGIC (AUTO-OWNER) ]] --
+local function UnlockMenu()
+    KeyFrame:Destroy()
+    MainFrame.Visible = true
+    Page1.Visible = true
+end
+
+if PlayerName == OwnerName then
+    UnlockMenu()
+else
+    SubmitBtn.MouseButton1Click:Connect(function()
+        if IsWhitelisted(PlayerName) and KeyInput.Text == PlayerName then
+            UnlockMenu()
+        else
+            StatusKey.Text = "Invalid Key!"; StatusKey.TextColor3 = Color3.fromRGB(255, 50, 50)
+        end
+    end)
+end
