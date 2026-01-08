@@ -234,23 +234,25 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
     local MapInp = Instance.new("TextBox"); MapInp.Size = UDim2.new(1, 0, 0, 30); MapInp.PlaceholderText = "Nama Map..."; MapInp.BackgroundColor3 = Color3.fromRGB(20, 20, 25); MapInp.TextColor3 = Color3.new(1,1,1); MapInp.Parent = PageRec; Instance.new("UICorner", MapInp)
     CreateBtn("🔴 RECORD / STOP CP", PageRec, Color3.fromRGB(180, 50, 50), ToggleRecord)
     
-    CreateBtn("▶️ PREVIEW (80%-FINISH)", PageRec, Color3.fromRGB(60, 150, 60), function(btn)
+    -- [[ BAGIAN YANG DIUBAH: PREVIEW 99% ]] --
+    CreateBtn("▶️ PREVIEW (99%-FINISH)", PageRec, Color3.fromRGB(60, 150, 60), function(btn)
         if #Data.AllCheckpoints == 0 then return end
         Data.Playing = not Data.Playing
         if Data.Playing then
             btn.Text = "⏹ STOP PREVIEW"
             btn.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
-            -- Logic Preview 80%
+            -- Logic Preview 99%
             local lastCP = Data.AllCheckpoints[#Data.AllCheckpoints]
-            local startIdx = math.floor(#lastCP * 0.8)
+            local startIdx = math.floor(#lastCP * 0.99) -- UBAH JADI 0.99
             local partPath = {}
             for i=startIdx, #lastCP do table.insert(partPath, lastCP[i]) end
-            PerfectSmoothPlay(partPath, btn, "▶️ PREVIEW (80%-FINISH)", Color3.fromRGB(60, 150, 60))
+            PerfectSmoothPlay(partPath, btn, "▶️ PREVIEW (99%-FINISH)", Color3.fromRGB(60, 150, 60))
         else
-            btn.Text = "▶️ PREVIEW (80%-FINISH)"
+            btn.Text = "▶️ PREVIEW (99%-FINISH)"
             btn.BackgroundColor3 = Color3.fromRGB(60, 150, 60)
         end
     end)
+    -- [[ SELESAI UBAH ]] --
     
     CreateBtn("🔗 MERGE ALL CP", PageRec, Color3.fromRGB(80, 80, 200), function() if #Data.AllCheckpoints > 0 then Data.MergedPath = {} for _, cp in ipairs(Data.AllCheckpoints) do for _, p in ipairs(cp) do table.insert(Data.MergedPath, p) end end ShowNotif("🔗 MERGED", Color3.new(1,1,1)) end end)
     CreateBtn("✖️ DELETE LAST CP", PageRec, Color3.fromRGB(50, 50, 55), DeleteLastCP)
