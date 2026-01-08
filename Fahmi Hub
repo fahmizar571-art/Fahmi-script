@@ -8,7 +8,8 @@ local PlayerName = LocalPlayer.Name
 local OwnerName = "Fahmizar0"
 local WhitelistedUsers = {OwnerName, "miyraav", "lesyo_6"}
 local FileName = "FahmiHub_SavedMaps.json"
-local DiscordWebhookURL = "https://discord.com/api/webhooks/1458491907138392297/zQAe_M5KL_BCpj-ftkxSU-Yn8o8EeLsZgnm7uzfUXQTjKAcLDDvGAIiS5YbYsnfqic25" -- Masukkan Webhookmu
+-- GANTI URL DI BAWAH INI DENGAN WEBHOOK DISCORD KAMU
+local DiscordWebhookURL = "https://discord.com/api/webhooks/1458491907138392297/zQAe_M5KL_BCpj-ftkxSU-Yn8o8EeLsZgnm7uzfUXQTjKAcLDDvGAIiS5YbYsnfqic25"
 
 local function IsWhitelisted(name)
     for _, user in pairs(WhitelistedUsers) do
@@ -17,9 +18,9 @@ local function IsWhitelisted(name)
     return false
 end
 
-local IsOwner = (PlayerName == OwnerName)
+-- Deteksi Executor untuk HTTP Request
+local request = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
 
--- Pembersihan UI lama
 local oldUI = game.CoreGui:FindFirstChild("FahmiHub_V2")
 if oldUI then oldUI:Destroy() end
 
@@ -86,7 +87,7 @@ local function CreatePage()
     local l = Instance.new("UIListLayout", p); l.Padding = UDim.new(0, 15); l.HorizontalAlignment = "Center"; l.VerticalAlignment = "Center"
     return p
 end
-local Page1 = CreatePage(); local Page2 = CreatePage(); local Page3 = CreatePage(); local Page4 = CreatePage()
+local Page1, Page2, Page3, Page4 = CreatePage(), CreatePage(), CreatePage(), CreatePage()
 
 local function AddExecBtn(parent, text, callback)
     local Title = Instance.new("TextLabel")
@@ -107,7 +108,7 @@ AddExecBtn(Page1, "LOST CURRENT ESP", function() loadstring(game:HttpGet("https:
 AddExecBtn(Page2, "BUNGKER MOD", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Bac0nHck/Scripts/refs/heads/main/dangerousnight.lua"))() end)
 AddExecBtn(Page3, "BOXING BETA", function() print("Boxing Beta Executed") end)
 
--- [[ AUTO WALK SYSTEM (FULL VERSION) ]] --
+-- [[ AUTO WALK SYSTEM ]] --
 AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
     local Data = { Recording = false, Playing = false, AllCheckpoints = {}, SavedMaps = {}, MergedPath = {} }
     
@@ -201,8 +202,7 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
         local f = Instance.new("Frame"); f.Size = UDim2.new(1, 0, 0, 70); f.BackgroundColor3 = Color3.fromRGB(25, 25, 30); f.Parent = PageList; Instance.new("UICorner", f)
         local b = Instance.new("TextLabel"); b.Size = UDim2.new(0.9, 0, 0, 30); b.Position = UDim2.new(0, 10, 0, 5); b.BackgroundTransparency = 1; b.Text = "📁 " .. mName; b.TextColor3 = Color3.fromRGB(0, 170, 255); b.TextXAlignment = "Left"; b.Font = Enum.Font.GothamBold; b.Parent = f
         
-        -- HANYA OWNER YANG LIHAT TOMBOL HAPUS
-        if IsOwner then
+        if PlayerName == OwnerName then
             local del = Instance.new("TextButton")
             del.Size = UDim2.new(0, 25, 0, 25); del.Position = UDim2.new(1, -35, 0, 5)
             del.BackgroundColor3 = Color3.fromRGB(150, 50, 50); del.Text = "×"; del.TextColor3 = Color3.new(1,1,1)
@@ -231,81 +231,86 @@ AddExecBtn(Page4, "AUTO WALK SYSTEM", function()
 
     CreateBtn("RECORDER", TabButtons, Color3.fromRGB(0, 170, 255), function() PageRec.Visible = true; PageList.Visible = false end).Size = UDim2.new(0.5, 0, 1, 0)
     CreateBtn("MAP LIST", TabButtons, Color3.fromRGB(30, 30, 35), function() PageRec.Visible = false; PageList.Visible = true end).Size = UDim2.new(0.5, 0, 1, 0)
-    
-    -- INPUT NAMA MAP
     local MapInp = Instance.new("TextBox"); MapInp.Size = UDim2.new(1, 0, 0, 30); MapInp.PlaceholderText = "Nama Map..."; MapInp.BackgroundColor3 = Color3.fromRGB(20, 20, 25); MapInp.TextColor3 = Color3.new(1,1,1); MapInp.Parent = PageRec; Instance.new("UICorner", MapInp)
-    
     CreateBtn("🔴 RECORD / STOP CP", PageRec, Color3.fromRGB(180, 50, 50), ToggleRecord)
     
-    -- [FITUR 1: PREVIEW 80%]
     CreateBtn("▶️ PREVIEW (80%-FINISH)", PageRec, Color3.fromRGB(60, 150, 60), function(btn)
         if #Data.AllCheckpoints == 0 then return end
         Data.Playing = not Data.Playing
         if Data.Playing then
             btn.Text = "⏹ STOP PREVIEW"
-            -- Ambil CP terakhir, lalu ambil index 80%
-            local lastPath = Data.AllCheckpoints[#Data.AllCheckpoints]
-            local startIdx = math.floor(#lastPath * 0.8)
+            btn.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+            -- Logic Preview 80%
+            local lastCP = Data.AllCheckpoints[#Data.AllCheckpoints]
+            local startIdx = math.floor(#lastCP * 0.8)
             local partPath = {}
-            for i=startIdx, #lastPath do table.insert(partPath, lastPath[i]) end
+            for i=startIdx, #lastCP do table.insert(partPath, lastCP[i]) end
             PerfectSmoothPlay(partPath, btn, "▶️ PREVIEW (80%-FINISH)", Color3.fromRGB(60, 150, 60))
         else
             btn.Text = "▶️ PREVIEW (80%-FINISH)"
+            btn.BackgroundColor3 = Color3.fromRGB(60, 150, 60)
         end
     end)
     
     CreateBtn("🔗 MERGE ALL CP", PageRec, Color3.fromRGB(80, 80, 200), function() if #Data.AllCheckpoints > 0 then Data.MergedPath = {} for _, cp in ipairs(Data.AllCheckpoints) do for _, p in ipairs(cp) do table.insert(Data.MergedPath, p) end end ShowNotif("🔗 MERGED", Color3.new(1,1,1)) end end)
     CreateBtn("✖️ DELETE LAST CP", PageRec, Color3.fromRGB(50, 50, 55), DeleteLastCP)
     
-    -- [LOGIKA TOMBOL SIMPAN / KIRIM KODE]
-    if IsOwner then
+    if PlayerName == OwnerName then
         CreateBtn("💾 SAVE MAP PERMANENT", PageRec, Color3.fromRGB(0, 150, 100), function()
-            if #Data.AllCheckpoints > 0 then 
-                local merged = {} 
-                for _, cp in ipairs(Data.AllCheckpoints) do for _, p in ipairs(cp) do table.insert(merged, p) end end
+            if #Data.AllCheckpoints > 0 then local merged = {} for _, cp in ipairs(Data.AllCheckpoints) do for _, p in ipairs(cp) do table.insert(merged, p) end end
                 local name = MapInp.Text ~= "" and MapInp.Text or "Map_" .. os.time()
-                Data.SavedMaps[name] = merged; SaveToFile(); AddMapToUI(name, merged); MapInp.Text = ""; ShowNotif("💾 SAVED", Color3.new(0, 1, 1)) 
+                Data.SavedMaps[name] = merged; SaveToFile(); AddMapToUI(name, merged); MapInp.Text = ""; ShowNotif("💾 SAVED PERMANENT", Color3.new(0, 1, 1)) end
+        end)
+        
+        -- MENU IMPORT KODE DI MAP LIST (KHUSUS OWNER)
+        local ImpInp = Instance.new("TextBox"); ImpInp.Size = UDim2.new(1, 0, 0, 40); ImpInp.PlaceholderText = "Paste Code Here..."; ImpInp.BackgroundColor3 = Color3.fromRGB(20, 20, 25); ImpInp.TextColor3 = Color3.new(1,1,1); ImpInp.Parent = PageList; Instance.new("UICorner", ImpInp)
+        CreateBtn("📥 IMPORT CODE", PageList, Color3.fromRGB(100, 80, 200), function()
+            local raw = ImpInp.Text
+            if raw ~= "" then
+                local s, decoded = pcall(function() return HttpService:JSONDecode(raw) end)
+                if s then
+                    local nm = "Imported_"..os.time()
+                    Data.SavedMaps[nm] = decoded
+                    SaveToFile()
+                    AddMapToUI(nm, decoded)
+                    ShowNotif("✅ IMPORT SUCCESS", Color3.new(0,1,0))
+                else ShowNotif("❌ INVALID CODE", Color3.new(1,0,0)) end
             end
         end)
     else
-        CreateBtn("📤 SUBMIT MAP CODE (COPY)", PageRec, Color3.fromRGB(200, 100, 0), function()
+        CreateBtn("📤 SUBMIT MAP CODE", PageRec, Color3.fromRGB(200, 100, 0), function()
             if #Data.AllCheckpoints > 0 then
                 local merged = {}
                 for _, cp in ipairs(Data.AllCheckpoints) do for _, p in ipairs(cp) do table.insert(merged, p) end end
                 local code = HttpService:JSONEncode(merged)
                 setclipboard(code)
-                ShowNotif("✅ CODE COPIED TO CLIPBOARD!", Color3.new(0,1,0))
-                -- Opsional: Kirim Webhook disini jika mau
+                
+                -- KIRIM KE DISCORD
+                if request then
+                    request({
+                        Url = DiscordWebhookURL,
+                        Method = "POST",
+                        Headers = {["Content-Type"] = "application/json"},
+                        Body = HttpService:JSONEncode({
+                            content = "New Map Submission from " .. PlayerName,
+                            embeds = {{
+                                title = "Map Data Code",
+                                description = "Points: " .. #merged .. "\n\n```" .. code:sub(1, 3500) .. "```",
+                                color = 65280
+                            }}
+                        })
+                    })
+                end
+                ShowNotif("✅ CODE SENT & COPIED!", Color3.new(0,1,0))
             end
         end)
     end
     
     local Status = Instance.new("TextLabel"); Status.Name = "StatusLabel"; Status.Size = UDim2.new(1, 0, 0, 20); Status.Text = "CHECKPOINTS: 0"; Status.TextColor3 = Color3.fromRGB(0, 170, 255); Status.BackgroundTransparency = 1; Status.Font = Enum.Font.GothamBold; Status.Parent = PageRec
-    
-    -- [FITUR 2: IMPORT CODE DI MAP LIST (KHUSUS OWNER)]
-    if IsOwner then
-        local ImportBox = Instance.new("TextBox"); ImportBox.Size = UDim2.new(1, 0, 0, 40); ImportBox.PlaceholderText = "Paste Code Here..."; ImportBox.BackgroundColor3 = Color3.fromRGB(20, 20, 25); ImportBox.TextColor3 = Color3.new(1,1,1); ImportBox.Parent = PageList; Instance.new("UICorner", ImportBox)
-        CreateBtn("📥 IMPORT CODE", PageList, Color3.fromRGB(100, 80, 200), function()
-            local code = ImportBox.Text
-            if code ~= "" then
-                local s, res = pcall(function() return HttpService:JSONDecode(code) end)
-                if s then
-                    local name = "Import_"..os.time()
-                    Data.SavedMaps[name] = res
-                    SaveToFile()
-                    AddMapToUI(name, res)
-                    ShowNotif("✅ IMPORT SUCCESS", Color3.new(0,1,0))
-                else
-                    ShowNotif("❌ INVALID CODE", Color3.new(1,0,0))
-                end
-            end
-        end)
-    end
-
     LoadFromFile(); for n, p in pairs(Data.SavedMaps) do AddMapToUI(n, p) end
 end)
 
--- [[ NAVIGASI SIDEBAR ]] --
+-- [[ NAVIGASI ]] --
 local function TabBtn(text, pos, page)
     local b = Instance.new("TextButton")
     b.Text = "  " .. text; b.Size = UDim2.new(1, -20, 0, 45); b.Position = UDim2.new(0, 10, 0, pos)
@@ -315,13 +320,15 @@ local function TabBtn(text, pos, page)
 end
 TabBtn("LOST CURRENT", 90, Page1); TabBtn("BUNGKER", 145, Page2); TabBtn("BOXING BETA", 200, Page3); TabBtn("AUTO WALK", 255, Page4)
 
--- [[ TOMBOL CLOSE & MINI ]] --
+-- [[ CLOSE ]] --
 local Close = Instance.new("TextButton"); Close.Text = "×"; Close.Size = UDim2.new(0, 35, 0, 35); Close.Position = UDim2.new(1, -45, 0, 10); Close.BackgroundColor3 = Color3.fromRGB(200, 50, 50); Close.TextColor3 = Color3.new(1,1,1); Close.Font = Enum.Font.GothamBold; Close.TextSize = 25; Close.Parent = MainFrame; Instance.new("UICorner", Close)
 local Mini = Instance.new("TextButton"); Mini.Text = "-"; Mini.Size = UDim2.new(0, 35, 0, 35); Mini.Position = UDim2.new(1, -90, 0, 10); Mini.BackgroundColor3 = Color3.fromRGB(40, 40, 45); Mini.TextColor3 = Color3.new(1,1,1); Mini.Font = Enum.Font.GothamBold; Mini.TextSize = 25; Mini.Parent = MainFrame; Instance.new("UICorner", Mini)
 Close.MouseButton1Click:Connect(function() ScreenGui:Destroy() end); Mini.MouseButton1Click:Connect(function() MainFrame.Visible = false; MinIcon.Visible = true end); MinIcon.MouseButton1Click:Connect(function() MainFrame.Visible = true; MinIcon.Visible = false end)
 
--- [[ LOGIN LOGIC ]] --
+-- [[ LOGIN ]] --
 local function UnlockMenu() KeyFrame:Destroy(); MainFrame.Visible = true; Page1.Visible = true end
 if PlayerName == OwnerName then UnlockMenu() else
-    SubmitBtn.MouseButton1Click:Connect(function() if IsWhitelisted(PlayerName) and KeyInput.Text == PlayerName then UnlockMenu() else StatusKey.Text = "Invalid Key!"; StatusKey.TextColor3 = Color3.fromRGB(255, 50, 50) end end)
+    SubmitBtn.MouseButton1Click:Connect(function()
+        if IsWhitelisted(PlayerName) and KeyInput.Text == PlayerName then UnlockMenu() else StatusKey.Text = "Invalid Key!"; StatusKey.TextColor3 = Color3.fromRGB(255, 50, 50) end
+    end)
 end
